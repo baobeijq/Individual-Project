@@ -10,6 +10,7 @@ using SingleKinect.EngagementManage;
 using SingleKinect.EngagerTrack;
 using SingleKinect.GestureRecognise;
 using SingleKinect.Manipulation;
+using Newtonsoft;
 
 namespace SingleKinect.FrameProcess
 {
