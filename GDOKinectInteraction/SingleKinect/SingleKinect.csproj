@@ -99,6 +99,7 @@
     <Compile Include="EngagerTrack\DataToSend.cs" />
     <Compile Include="EngagerTrack\EngagerTracker.cs" />
     <Compile Include="FrameProcess\BodyProcessor.cs" />
+    <Compile Include="EngagementManage\DataToSendnew.cs" />
     <Compile Include="FrameProcess\FaceProcessor.cs" />
     <Compile Include="FrameProcess\FrameReader.cs" />
     <Compile Include="Manipulation\InputConstants\INPUT.cs" />

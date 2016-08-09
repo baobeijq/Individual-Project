@@ -90,6 +90,11 @@ namespace SingleKinect.Draw
         //Draw engager
         public void drawSkeleton(Body body, HandState left, HandState right, int yaw, int pitch, int roll)
         {
+            if (yaw != 0)
+            {
+                Body bodyCopy = body;
+
+            }
             var joints = CoordinateConverter.convertJointsToDSPoints(body.Joints);
 
             drawBones(joints);

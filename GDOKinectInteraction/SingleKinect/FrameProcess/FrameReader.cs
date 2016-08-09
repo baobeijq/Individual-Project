@@ -10,14 +10,19 @@ using SingleKinect.EngagementManage;
 using SingleKinect.EngagerTrack;
 using SingleKinect.GestureRecognise;
 using SingleKinect.Manipulation;
-using Newtonsoft;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography.X509Certificates;
+using Newtonsoft;//new
 
 namespace SingleKinect.FrameProcess
 {
     public class FrameReader
     {
         private static FrameReader frameReader;
-        private FrameReader() { }
+
+        private FrameReader()
+        {
+        }
 
         public static FrameReader Instance
         {
@@ -37,7 +42,7 @@ namespace SingleKinect.FrameProcess
         private EngagementManager eManager;
         //private EngagerTracker eTracker;
         private Manipulator man;
-       // private GestureRecogniser recogniser;
+        // private GestureRecogniser recogniser;
         private BodyFrameReader bfr;
         private BodyProcessor bodyProcessor;
 
@@ -45,11 +50,13 @@ namespace SingleKinect.FrameProcess
         private FaceFrameReader[] faceFrameReaders;
         private FaceFrameResult[] faceFrameResults;
         private Dictionary<FaceFrameSource, int> ffsDic;
-         
+
         private int bodyCount;
 
         private FaceProcessor faceProcessor;
         //private EngagerTracker eTracker;
+
+        private SendData.SendData sendData;
 
         public void start()
         {
@@ -113,7 +120,7 @@ namespace SingleKinect.FrameProcess
             }
         }
 
-        private void bfr_FrameArrived(object o, BodyFrameArrivedEventArgs args)
+        public void bfr_FrameArrived(object o, BodyFrameArrivedEventArgs args)//was private
         {
             using (var bodyFrame = args.FrameReference.AcquireFrame())
             {
@@ -125,14 +132,6 @@ namespace SingleKinect.FrameProcess
                 drawer.clear();
                 bodyProcessor.processBodyFrame(bodyFrame);
                 bodyProcessor.matchFaceWithBody(faceFrameSources, faceFrameResults, faceProcessor);
-
-                /* New added
-                 * foreach(var  u in bodyProcessor.eManager.users）｛
-                    u.Value.
-                  create json,
-                    ｝
-                */
-
 
                 if (!eManager.HasEngaged)
                 {
@@ -148,6 +147,18 @@ namespace SingleKinect.FrameProcess
                 int yaw, pitch, roll;
                 eManager.getTrackerInfo(out body, out left, out right, out yaw, out pitch, out roll);
                 drawer.drawSkeleton(body, left, right, yaw, pitch, roll);
+
+                  /* New added 
+                   foreach(var user in bodyProcessor.eManager.users）｛
+                   var u = user.Value;
+                   DataToSendnew dataToSend;
+                   dataToSend.RightHandJoint = user.body.Joints[JointType.HandRight].Position
+                    //user
+                     //u.Value.
+                    // create json,
+                  ｝
+
+                  */
 
                 if (eManager.DisablingEngagement)
                 {
@@ -165,9 +176,9 @@ namespace SingleKinect.FrameProcess
                 {
                     return;
                 }
-                
+
                 int index = ffsDic[faceFrame.FaceFrameSource];
-               // Debug.Print("Face {0} comes with {1} ID {2}", index, faceFrame.FaceFrameSource.IsTrackingIdValid, faceFrame.FaceFrameSource.TrackingId);
+                // Debug.Print("Face {0} comes with {1} ID {2}", index, faceFrame.FaceFrameSource.IsTrackingIdValid, faceFrame.FaceFrameSource.TrackingId);
 
                 if (faceProcessor.validateFaceFrame(faceFrame))
                 {

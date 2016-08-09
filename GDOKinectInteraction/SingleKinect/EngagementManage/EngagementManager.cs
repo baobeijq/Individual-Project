@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Kinect;
 using SingleKinect.EngagerTrack;
+using SingleKinect.SendData;
 
 namespace SingleKinect.EngagementManage
 {
@@ -18,6 +19,8 @@ namespace SingleKinect.EngagementManage
         public Dictionary<ulong, int> holdTime = new Dictionary<ulong, int>();
 
         public EngagerTracker eTracker = EngagerTracker.Instance;
+
+        public SendData.SendData SendJson= SendData.SendData.Instance;//new
 
         public bool HasEngaged
         {
@@ -50,7 +53,16 @@ namespace SingleKinect.EngagementManage
                     return null;
                 }
             }
-        } 
+        }
+
+//        public DataToSend DataToSend
+//        {
+//            get
+//            {
+//                return composeDataToSend();
+//            }
+//        }
+
 
         private void checkEngage()
         {
@@ -59,7 +71,12 @@ namespace SingleKinect.EngagementManage
             foreach (var userTuple in users)
             {
                 var user = userTuple.Value;
-                
+                DataToSendnew sendingData =new DataToSendnew(user.body);//new
+
+                //send the data of all people tracked to server --color need to be added
+                SendJson.send(sendingData);//new
+
+
                 if (!engage &&
                     user.body.Joints[JointType.HandRight].Position.Y > user.body.Joints[JointType.Head].Position.Y)
                 {
@@ -175,5 +192,6 @@ namespace SingleKinect.EngagementManage
             eTracker.Roll = users[trackingId].headRoll;
             eTracker.Yaw = users[trackingId].headYaw;
         }
+
     }
 }

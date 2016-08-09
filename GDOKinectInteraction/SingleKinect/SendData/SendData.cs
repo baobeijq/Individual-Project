@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using Newtonsoft.Json;
-using SingleKinect.EngagerTrack;
+using SingleKinect.EngagementManage;
 
 namespace SingleKinect.SendData
 {
@@ -54,17 +54,19 @@ namespace SingleKinect.SendData
             isConnected = true;
         }
 
-        public void send(DataToSend sendingData)
+        public void send(DataToSendnew sendingData)
         {
-            if (!isConnected)
-            {
-                return;
-            }
+//            if (!isConnected)
+//            {
+//                return;
+//            }
 
             string lineToSend = getSendingJson(sendingData);
             try
             {
-                _writer.WriteLine(lineToSend);
+                //_writer.WriteLine(lineToSend);
+                File.WriteAllText(@"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\Output.json", lineToSend);              
+                Console.WriteLine("hi");
             }
             catch (Exception ex)
             {
@@ -82,11 +84,21 @@ namespace SingleKinect.SendData
             //Console.WriteLine("Received from server: " + lineReceived);
         }
 
-        private string getSendingJson(DataToSend sendingData)
+        private string getSendingJson(DataToSendnew sendingData)
         {
             string json = JsonConvert.SerializeObject(sendingData);
-
             return json;
         }
+
+         /* private void createJSON()
+        {
+            //Create Json file
+            //string outputJSON = JsonConverter.SerializeObject(Datatosend);
+            //File.WriteAllText("Output.json", outputJSON);
+
+            //Parsing Json file
+            //String JSONstring = File.ReadAllText("Json.json");
+            //DataReceived data1=JsonConvert.DeserializeObject<DataReceived>(Datatosend);
+        }*/
     }
 }

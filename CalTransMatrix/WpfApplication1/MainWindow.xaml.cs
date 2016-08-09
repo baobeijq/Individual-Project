@@ -24,7 +24,7 @@ namespace WpfApplication1
 
         private CoordinateMapper coordinateMapper;
 
-        private readonly int bytesPerPixel = (PixelFormats.Bgr32.BitsPerPixel + 7)/8;
+        private readonly int bytesPerPixel = (PixelFormats.Bgr32.BitsPerPixel + 7)/8;// Calculate how many bytes are needed to store the pixels
         private FrameDescription colorFrameDescription;
         private ushort[] _depthData;
         private byte[] _colorFrameData;
@@ -62,7 +62,7 @@ namespace WpfApplication1
             // create the bitmap to display
             bitmap = new WriteableBitmap(colorSpaceWidth, colorSpaceHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
 
-            DataContext = this;
+            DataContext = this;//what does this use for
             sensor.Open();
 
         }
@@ -118,7 +118,7 @@ namespace WpfApplication1
                     coordinateMapper.MapDepthFrameToCameraSpace(_depthData, cameraSpacePoints);
                     coordinateMapper.MapDepthFrameToColorSpace(_depthData, colorSpacePoints);
 
-                    double[,] spaceAndRGB = new double[pixelNum, 6];
+                    double[,] spaceAndRGB = new double[pixelNum, 6];//what does this mean
 
                     ushort maxDepth = 2000;
                     ushort minDepth = 500;
@@ -164,15 +164,35 @@ namespace WpfApplication1
                             spaceAndRGB[index, 4] = g;
                             spaceAndRGB[index, 5] = b;
 
-                            if (r < 140 || g > r - 80 || b > r - 80)
+                            if (r > 140 && g < r - 80 && b < r - 80) //red
+                            {
+                                rList.Add(index);
+                            }
+                            else if (r > 140 && g > r - 30 && b < r - 95)
+                            {
+                                rList.Add(index);
+                            }
+
+                            /*if (r < 140 || g > r - 80 && g < r - 30 || b > r - 80) //red
                             {
                                 continue;
                             }
-                            rList.Add(index);
+
+                            if (r < 140 || g < r - 30 || b > r - 95) // yellow
+                            {
+                                continue;
+                            }
+
+                             if (r < 140 || g < r - 30 || b > r - 95) // green
+                             {
+                                 continue;
+                             }*/
+
+                            //rList.Add(index);
                         }
                     }
 
-                    StreamWriter file = new StreamWriter(@"C:\Users\Leo\Dropbox\Matlab\pointcloud.txt");
+                    StreamWriter file = new StreamWriter(@"C:\Users\Wei\Documents\MATLAB\RYtgt2.txt");
                     
                     foreach (int index in rList)
                     {

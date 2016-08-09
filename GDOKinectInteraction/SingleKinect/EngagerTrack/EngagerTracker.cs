@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using Microsoft.Kinect;
-using SingleKinect.EngagementManage;
 using SingleKinect.MyDataStructures;
 
 
@@ -93,6 +93,7 @@ namespace SingleKinect.EngagerTrack
         public int Yaw { get; set; }
         public int Roll { get; set; }
 
+/*        //not used
         public DataToSend DataToSend
         {
             get
@@ -100,26 +101,52 @@ namespace SingleKinect.EngagerTrack
                 return composeDataToSend();
             }
         }
-
+        //not used
         private DataToSend composeDataToSend()
         {
             return new DataToSend
             {
                 LeftHandJoint = engager.Joints[JointType.HandLeft].Position,
                 RightHandJoint = engager.Joints[JointType.HandRight].Position,
+                
+                //new added skeleton data
+                SpineBase = engager.Joints[JointType.SpineBase].Position,
+                SpineMid = engager.Joints[JointType.SpineMid].Position,
+                SpineShoulder = engager.Joints[JointType.SpineShoulder].Position,
+                ShoulderLeft = engager.Joints[JointType.ShoulderLeft].Position,
+                ShoulderRight = engager.Joints[JointType.ShoulderRight].Position,
+                Neck = engager.Joints[JointType.Neck].Position,
+                Head = engager.Joints[JointType.Head].Position,
+                KneeLeft = engager.Joints[JointType.KneeLeft].Position,
+                KneeRight = engager.Joints[JointType.KneeRight].Position,
+                //FootLeft = engager.Joints[JointType.FootLeft].Position,
+                //FootRight = engager.Joints[JointType.FootRight].Position,
+                ElbowLeft = engager.Joints[JointType.ElbowLeft].Position,
+                ElbowRight = engager.Joints[JointType.ElbowRight].Position,
+                HipLeft = engager.Joints[JointType.HipLeft].Position,
+                HipRight = engager.Joints[JointType.HipRight].Position,
+                AnkleLeft = engager.Joints[JointType.AnkleLeft].Position,
+                AnkleRight = engager.Joints[JointType.AnkleRight].Position,
+                WristLeft = engager.Joints[JointType.WristLeft].Position,
+                WristRight = engager.Joints[JointType.WristRight].Position,
+
 
                 LeftHandState = LeftState,
                 RightHandState = RightState,
 
+
                 LeftTrackingConfidence = engager.HandLeftConfidence,
                 RighTrackingConfidence = engager.HandRightConfidence,
+
+                // more things needs to be added here as well as the DataToSend struct
+                // including jointtype face orientation-directly can be used
 
                 hasReceived = false,
                 createdTime = DateTime.UtcNow
 
             };
 
-        }
+        }*/
 
         private void updateHands()
         {
@@ -150,15 +177,5 @@ namespace SingleKinect.EngagerTrack
             }
         }
 
-       /* private void createJSON()
-        {
-            //Create Json file
-            //string outputJSON = JsonConverter.SerializeObject(Datatosend);
-            //File.WriteAllText("Output.json", outputJSON);
-
-            //Parsing Json file
-            //String JSONstring = File.ReadAllText("Json.json");
-            //DataReceived data1=JsonConvert.DeserializeObject<DataReceived>(Datatosend);
-        }*/
     }
 }
