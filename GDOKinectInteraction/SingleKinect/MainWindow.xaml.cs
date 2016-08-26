@@ -26,7 +26,7 @@ namespace SingleKinect
 
             ReadConfiguration.read("../../MyConfiguration/MyConfiguration.txt");
 
-            drawer.bindComponents(new ComponentsArgs(leftLabel, rightLabel, bodyCanvas, engagerCanvas, faceLabel));
+            drawer.bindComponents(new ComponentsArgs(leftLabel, rightLabel, bodyCanvas, engagerCanvas,transformCanvas,faceLabel));
 
             Loaded += MainPage_Loaded;
             Closing += MainWindow_Closing;

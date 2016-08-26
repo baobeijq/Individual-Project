@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;//new
 using System.Net.Sockets;
+using System.Threading;//new
 using Newtonsoft.Json;
 using SingleKinect.EngagementManage;
+using System.ComponentModel;
+using System.Windows;
 
 namespace SingleKinect.SendData
 {
@@ -26,7 +30,9 @@ namespace SingleKinect.SendData
             }
         }
 
-        private static TcpClient client;
+        private TcpClient client;
+        private Socket socket;
+        private IPEndPoint IP_End;
 
         private NetworkStream nwStream;
         private StreamReader reader;
@@ -34,54 +40,88 @@ namespace SingleKinect.SendData
 
         private bool isConnected;
 
-        public void connect()
+        public void initialize()
         {
-            try
+            IPAddress[] localIP = Dns.GetHostAddresses(Dns.GetHostName()); //get my own IP
+            String myAddress;
+            foreach (IPAddress address in localIP)
             {
-                client = new TcpClient("127.0.0.1", 5000);
+                if (address.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    myAddress = address.ToString();
+                    Console.WriteLine("Client Address is "+ myAddress );
+                }
             }
-            catch
+            client = new TcpClient();
+            //socket = client.Client;
+            string server = "192.168.0.4";
+            string port = "7777";
+            IP_End = new IPEndPoint(IPAddress.Parse(server), int.Parse(port));
+            client.Connect(IP_End);
+        }
+
+        public void connect(DataToSendnew sendingData)
+        {           
+            try
+            {                
+                if (client.Connected)
+                {
+                    Console.WriteLine("Connected to Server" );
+                    _writer = new StreamWriter(client.GetStream());
+                    reader = new StreamReader(client.GetStream());
+                    _writer.AutoFlush = true;
+
+                    //Console.WriteLine("YES IM HERE");
+
+                    string lineToSend = getSendingJson(sendingData);
+                    send(lineToSend);
+
+                    
+                }
+            }
+            catch (Exception x)
             {
-                Debug.Print("not connected to server");
+                Debug.Print("not connected to server" + "\n");
+                Debug.Print(x.Message.ToString());
                 isConnected = false;
                 return;
             }
 
-            nwStream = client.GetStream();
-            reader = new StreamReader(nwStream);
-            _writer = new StreamWriter(nwStream) { AutoFlush = true };
-
+            //Console.WriteLine("I am out!");//test
             isConnected = true;
+
         }
 
-        public void send(DataToSendnew sendingData)
+        public void send(string lineToSend)
         {
-//            if (!isConnected)
-//            {
-//                return;
-//            }
-
-            string lineToSend = getSendingJson(sendingData);
+            //string lineToSend = getSendingJson(sendingData);
             try
             {
-                //_writer.WriteLine(lineToSend);
-                File.WriteAllText(@"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\Output.json", lineToSend);              
-                Console.WriteLine("hi");
+                /*File.WriteAllText(
+                    @"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\Output.json",
+                    lineToSend);*/
+                Console.WriteLine("Json saved");
+
+                _writer.WriteLine(lineToSend);
+                Console.WriteLine("Me: " + lineToSend);
             }
             catch (Exception ex)
             {
+                Debug.Print("Send failed" + "\n");
                 Console.WriteLine(ex);
                 isConnected = false;
             }
-        
 
-        //receive();
-        }
+            lineToSend = "";
 
-        public void receive()
-        {
-            string lineReceived = reader.ReadLine();
-            //Console.WriteLine("Received from server: " + lineReceived);
+//            string acknowledge = reader.ReadLine();
+//            while (acknowledge != null)
+//            {
+//                Console.WriteLine(acknowledge);
+//                acknowledge = reader.ReadLine();
+//            }
+            //receive();
+
         }
 
         private string getSendingJson(DataToSendnew sendingData)
@@ -90,15 +130,29 @@ namespace SingleKinect.SendData
             return json;
         }
 
-         /* private void createJSON()
+        public void clientClose()
         {
-            //Create Json file
-            //string outputJSON = JsonConverter.SerializeObject(Datatosend);
-            //File.WriteAllText("Output.json", outputJSON);
+            client.Close();
+            Console.WriteLine("Client is closed.\n");
+        }
 
-            //Parsing Json file
-            //String JSONstring = File.ReadAllText("Json.json");
-            //DataReceived data1=JsonConvert.DeserializeObject<DataReceived>(Datatosend);
-        }*/
+        //not used
+        //        public void receive()
+        //        {
+        //            string lineReceived = reader.ReadLine();
+        //            //Console.WriteLine("Received from server: " + lineReceived);
+        //        }
+
+
+        /* private void createJSON()
+       {
+           //Create Json file
+           //string outputJSON = JsonConverter.SerializeObject(Datatosend);
+           //File.WriteAllText("Output.json", outputJSON);
+
+           //Parsing Json file
+           //String JSONstring = File.ReadAllText("Json.json");
+           //DataReceived data1=JsonConvert.DeserializeObject<DataReceived>(Datatosend);
+       }*/
     }
 }

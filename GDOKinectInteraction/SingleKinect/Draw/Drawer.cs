@@ -42,7 +42,11 @@ namespace SingleKinect.Draw
                 {
                     return engagerCanvas;
                 }
-                
+                if (currentCanvasName == "tformBody")
+                {
+                    return tformBody;
+                }
+
                 Debug.Print("WWWWWWWWWWWWWWRONG CANVAS NAME");
                 return null;
                 
@@ -55,7 +59,7 @@ namespace SingleKinect.Draw
         private Label faceLabel;
         private Canvas bodyCanvas;
         private Canvas engagerCanvas;
-
+        private Canvas tformBody;//new
         private Drawer()
         {
             // a bone defined as a line between two joints
@@ -68,7 +72,8 @@ namespace SingleKinect.Draw
             rightLabel = (Label) args.Components[1];
             bodyCanvas = (Canvas) args.Components[2];
             engagerCanvas = (Canvas) args.Components[3];
-            faceLabel = (Label) args.Components[4];
+            tformBody = (Canvas) args.Components[4];//new
+            faceLabel = (Label) args.Components[5];
         }
 
         //Draw all people
@@ -80,7 +85,7 @@ namespace SingleKinect.Draw
 
             foreach (var joint in joints.Values)
             {
-                drawCircle(10, joint.X, joint.Y, new SolidColorBrush(Color.FromArgb(255, 100, 255, 100)));
+                drawCircle(10, joint.X, joint.Y, new SolidColorBrush(Color.FromArgb(255, 255, 255, 100)));//was 255, 100, 255, 100
             }
 
             showHands(joints[JointType.HandRight], joints[JointType.HandLeft],
@@ -112,6 +117,19 @@ namespace SingleKinect.Draw
             rightLabel.Content = "HandRightState: " + right;
             faceLabel.Content = "Face Yaw Pitch Roll: " + yaw + ", " + pitch + ", " + roll;
 
+        }
+
+        //Draw transformation new
+        public void drawSkeleton(DataToSendnew skeleton,Body body)
+        {
+
+            var joints = CoordinateConverter.convertJointsToDSPoints(skeleton,body);
+            drawBones(joints);
+            foreach (var joint in joints.Values)
+            {
+                drawCircle(10, joint.X, joint.Y, new SolidColorBrush(Color.FromArgb(255, 100, 255, 100)));
+            }
+            //No hand state shown here
         }
 
         public void clear()

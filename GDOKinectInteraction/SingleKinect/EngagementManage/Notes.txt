@@ -1,0 +1,55 @@
+﻿LARGE BOARD WITH RIGHT COLOR (SET1)
+C1TOB1:see jpg in the data folder
+tform.T=
+    0.7957   -0.3882   -0.4650         0
+    0.3874    0.9163   -0.1022         0
+    0.4657   -0.0988    0.8794         0
+    0.0806    0.0230    0.0433    1.0000
+
+D1&C1 perfectly match
+tform.T=
+    0.5295    0.4623    0.7113         0
+   -0.4861    0.8525   -0.1922         0
+   -0.6953   -0.2440    0.6761         0
+    0.0043    0.0041    0.0062    1.0000
+C1central =
+			 0.3582    0.2020    3.3951
+C1normal =	
+			 -0.0001    0.0350   -0.0221
+D1central =
+			 -0.0470    0.3552    3.4240
+D1normal =
+			 -0.0005   -0.0515    0.0354
+
+E1ToD1:perfectly match
+tform.T=
+    0.5121    0.4607    0.7249         0
+   -0.4551    0.8613   -0.2260         0
+   -0.7285   -0.2142    0.6507         0
+    0.0032    0.0162    0.0222    1.0000
+(feel like no translatio needed)
+
+SET C as the origin Kinect- only 4 transform is needed(redo the B1toC1) 
+
+
+/*            originalM[0,] = body.Joints[JointType.HandRight].Position;
+            originalM[1,0] = body.Joints[JointType.HandLeft].Position.X;
+            originalM[2,0] = body.Joints[JointType.SpineBase].Position.X;
+            this.SpineMid = body.Joints[JointType.SpineMid].Position.X;
+            this.SpineShoulder = body.Joints[JointType.SpineShoulder].Position.X;
+            this.ShoulderLeft = body.Joints[JointType.ShoulderLeft].Position.X;
+            this.ShoulderRight = body.Joints[JointType.ShoulderRight].Position.X;
+            this.Neck = body.Joints[JointType.Neck].Position.X;
+            this.Head = body.Joints[JointType.Head].Position.X;
+            this.KneeLeft = body.Joints[JointType.KneeLeft].Position.X;
+            this.KneeRight = body.Joints[JointType.KneeRight].Position.X;
+            //this.FootLeft = body.Joints[JointType.FootLeft].Position;
+            //FootRight = body.Joints[JointType.FootRight].Position;
+            this.ElbowLeft = body.Joints[JointType.ElbowLeft].Position.X;
+            this.ElbowRight = body.Joints[JointType.ElbowRight].Position.X;
+            this.HipLeft = body.Joints[JointType.HipLeft].Position.X;
+            this.HipRight = body.Joints[JointType.HipRight].Position.X;
+            this.AnkleLeft = body.Joints[JointType.AnkleLeft].Position.X;
+            this.AnkleRight = body.Joints[JointType.AnkleRight].Position.X;
+            this.WristLeft = body.Joints[JointType.WristLeft].Position.X;
+            this.WristRight = body.Joints[JointType.WristRight].Position.X;*/

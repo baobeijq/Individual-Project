@@ -4,7 +4,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Kinect;
 using SingleKinect.EngagerTrack;
+using SingleKinect.Draw;
 using SingleKinect.SendData;
+using Newtonsoft.Json;
+using System.IO;
+//using System.Windows.Media;
+using SharpDX;
+using SharpDX.Mathematics.Interop;
+using SharpDX.Direct3D9;
+
+//using Extreme.Mathematics;
+//using Extreme.Mathematics.LinearAlgebra;
 
 namespace SingleKinect.EngagementManage
 {
@@ -17,10 +27,12 @@ namespace SingleKinect.EngagementManage
 
         public Dictionary<ulong, MyHuman> users = new Dictionary<ulong, MyHuman>();
         public Dictionary<ulong, int> holdTime = new Dictionary<ulong, int>();
+        private readonly Drawer drawer = Drawer.Instance;
 
         public EngagerTracker eTracker = EngagerTracker.Instance;
 
         public SendData.SendData SendJson= SendData.SendData.Instance;//new
+        public MatrixTransform TransformM= MatrixTransform.Instance;
 
         public bool HasEngaged
         {
@@ -55,27 +67,56 @@ namespace SingleKinect.EngagementManage
             }
         }
 
-//        public DataToSend DataToSend
-//        {
-//            get
-//            {
-//                return composeDataToSend();
-//            }
-//        }
-
 
         private void checkEngage()
         {
+            
             clearUntrackedUser();
+            drawer.clear();
+
+            //SendJson.initialize();
+            int count = 0;//test
 
             foreach (var userTuple in users)
             {
                 var user = userTuple.Value;
-                DataToSendnew sendingData =new DataToSendnew(user.body);//new
 
+                //1.Here to do the matrix transformation, then send the transformed data
+                //2.visualize the transformation
+                Body preTformBody = user.body;//Body before transformation
+                TransformM.createMatrix(preTformBody);
+                DataToSendnew tformBody = TransformM.transform();//Skeleton after transformation
+
+                tformBody.no = count;
+                tformBody.createdTime = DateTime.UtcNow;
+
+                drawer.currentCanvasName = "tformBody";
+                drawer.drawSkeleton(preTformBody);
+                drawer.drawSkeleton(tformBody,preTformBody);//Get Joint type from preTformBody.draw tformBody
+                drawer.clear();//need or not?
+                Console.WriteLine("I CLEARED \n");//test
+
+
+                //3.Get data needed from txt
+                //4.Test the skelton rotation in matlab
+                //5.Solve the visualize problem
+                //6.build basic babylon
+
+                //DataToSendnew sendingData =new DataToSendnew(user.body,count);//new
+                Console.WriteLine("Get JSON \n");//test
+                //test
+                string lineToSend = getSendingJson(tformBody) +"\n";
+                //File.WriteAllText(
+                  // @"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\Output.json",
+                   //lineToSend);
+
+                File.AppendAllText(@"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\OutputTest.json",
+                   lineToSend);
+                //Connect to server and send data
+                //SendJson.connect(sendingData); //seperate the connect and the send
                 //send the data of all people tracked to server --color need to be added
-                SendJson.send(sendingData);//new
-
+                count = count + 1;
+                Console.WriteLine("TCP "+count+ " part ends");//test
 
                 if (!engage &&
                     user.body.Joints[JointType.HandRight].Position.Y > user.body.Joints[JointType.Head].Position.Y)
@@ -103,6 +144,8 @@ namespace SingleKinect.EngagementManage
                     break;
                 }
             }
+            
+            //SendJson.clientClose();
 
             if (engage)
             {
@@ -138,6 +181,16 @@ namespace SingleKinect.EngagementManage
                     DisablingEngagement = false;
                 }
             }
+
+            
+            
+
+        }
+
+        private string getSendingJson(DataToSendnew sendingData)//test
+        {
+            string json = JsonConvert.SerializeObject(sendingData);
+            return json;
         }
 
         private void alterEngageState(bool engageState, ulong key)
@@ -192,6 +245,7 @@ namespace SingleKinect.EngagementManage
             eTracker.Roll = users[trackingId].headRoll;
             eTracker.Yaw = users[trackingId].headYaw;
         }
+
 
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Threading;
 using Microsoft.Kinect;
 
 namespace SingleKinect.EngagementManage
 {
-    public class DataToSendnew
+    public class DataToSendnew 
     {
+        public char kinectNo = 'M';
         public CameraSpacePoint RightHandJoint;
         public CameraSpacePoint LeftHandJoint;
 
@@ -33,11 +36,47 @@ namespace SingleKinect.EngagementManage
 
         public bool hasReceived;
         public DateTime createdTime { get; set; }
+        public int no;
 
-        public DataToSendnew(Body body)
+        CameraSpacePoint pos = new CameraSpacePoint()
         {
+            X = 77.0000f,
+            Y = 77.0000f,
+            Z = 77.0000f
+        };
+        //Initialize- empty constructor
+        public DataToSendnew()
+        {
+            //Pack 19 JOINTS
+            this.Head = pos;
+            this.Neck = pos;
+            this.SpineShoulder = pos;
+            this.SpineMid = pos;
+            this.SpineBase = pos;
+            this.ShoulderRight = pos;
+            this.ShoulderLeft = pos;
+            this.ElbowRight = pos;
+            this.ElbowLeft = pos;
+            this.WristRight = pos;
+            this.WristLeft = pos;
+            this.HipRight = pos;
+            this.HipLeft = pos;
+            this.KneeRight = pos;
+            this.KneeLeft = pos;
+            this.AnkleRight = pos;
+            this.AnkleLeft = pos;
+            this.RightHandJoint = pos;
+            this.LeftHandJoint = pos;
+            //this.FootLeft = body.Joints[JointType.FootLeft].Position;
+            //FootRight = body.Joints[JointType.FootRight].Position;
+            hasReceived = false;
+        }
+
+        public DataToSendnew(Body body,int count)
+        {
+            //Pack 19 JOINTS
             this.RightHandJoint = body.Joints[JointType.HandRight].Position;
-            this.RightHandJoint = body.Joints[JointType.HandRight].Position;
+            this.LeftHandJoint = body.Joints[JointType.HandLeft].Position;
 
                 //new added skeleton data
             this.SpineBase = body.Joints[JointType.SpineBase].Position;
@@ -62,6 +101,115 @@ namespace SingleKinect.EngagementManage
 
             hasReceived = false;
             createdTime = DateTime.UtcNow;
+            no = count;
         }
+
+        public CameraSpacePoint getPos(int jointKey)
+        {
+            switch (jointKey)
+            {
+                case 1:
+                    return Head;                    
+                case 2:
+                    return Neck;
+                case 3:
+                    return SpineShoulder;
+                case 4:
+                    return SpineMid;
+                case 5:
+                    return SpineBase;
+                case 6:
+                    return ShoulderRight;
+                case 7:
+                    return ShoulderLeft;
+                case 8:
+                    return ElbowRight ;
+                case 9:
+                    return ElbowLeft ;
+                case 10:
+                    return WristRight ;
+                case 11:
+                    return WristLeft ;
+                case 12:
+                    return HipRight;
+                case 13:
+                    return HipLeft;
+                case 14:
+                    return KneeRight ;
+                case 15:
+                    return KneeLeft ;
+                case 16:
+                    return AnkleRight ;
+                case 17:
+                    return AnkleLeft ;
+                case 18:
+                    return RightHandJoint ;
+                case 19:
+                    return LeftHandJoint ;
+
+                default:
+                    Console.WriteLine("Default case- out of range");
+                    break;
+
+            }
+
+            Console.WriteLine("Wrong pos is returned \n");
+            return pos;
+        }
+
+        /*function to return joints type*/
+        public Joint return_joint_type(int key,Body personBody)
+        {
+            switch (key)
+            {
+                case 1:
+                    return personBody.Joints[JointType.Head];
+                case 2:
+                    return personBody.Joints[JointType.Neck];
+                case 3:
+                    return personBody.Joints[JointType.SpineShoulder];
+                case 4:
+                    return personBody.Joints[JointType.SpineMid];
+                case 5:
+                    return personBody.Joints[JointType.SpineBase];
+                case 6:
+                    return personBody.Joints[JointType.ShoulderRight];
+                case 7:
+                    return personBody.Joints[JointType.ShoulderLeft];
+                case 8:
+                    return personBody.Joints[JointType.ElbowRight];
+                case 9:
+                    return personBody.Joints[JointType.ElbowLeft];
+                case 10:
+                    return personBody.Joints[JointType.WristRight];
+                case 11:
+                    return personBody.Joints[JointType.WristLeft];
+                case 12:
+                    return personBody.Joints[JointType.HipRight];
+                case 13:
+                    return personBody.Joints[JointType.HipLeft];
+                case 14:
+                    return personBody.Joints[JointType.KneeRight];
+                case 15:
+                    return personBody.Joints[JointType.KneeLeft];
+                case 16:
+                    return personBody.Joints[JointType.AnkleRight];
+                case 17:
+                    return personBody.Joints[JointType.AnkleLeft];
+                case 18:
+                    return personBody.Joints[JointType.HandRight];
+                case 19:
+                    return personBody.Joints[JointType.HandLeft];
+
+                default:
+                    Console.WriteLine("Default case- out of range");
+                    break;
+
+            }
+
+            //if none of the key matches, return handtipleft
+            return personBody.Joints[JointType.HandTipLeft];
+        }
+
     }
 }

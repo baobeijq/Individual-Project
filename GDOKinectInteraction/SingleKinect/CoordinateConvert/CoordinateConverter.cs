@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Kinect;
+using SingleKinect.EngagementManage;
 using SingleKinect.Manipulation;
 using SingleKinect.MyDataStructures;
 
@@ -84,9 +85,31 @@ namespace SingleKinect.CoordinateConvert
             return joints;
         }
 
+        public static Dictionary<JointType, DepthSpacePoint> convertJointsToDSPoints(
+        DataToSendnew jointsData,Body body)
+        {
+            var joints = new Dictionary<JointType, DepthSpacePoint>();
+            int jointKey;
+            for(jointKey = 1;jointKey<=19; jointKey++)
+            {
+                CameraSpacePoint pos = jointsData.getPos(jointKey);
+                Joint joint = jointsData.return_joint_type(jointKey,body);//In order to get the joint type
+                var point = JointToDepthSpace(pos);
+                joints.Add(joint.JointType, point);
+            }
+            
+            return joints;
+        }
+
         public static DepthSpacePoint JointToDepthSpace(Joint joint)
         {
             var point = Sensor.CoordinateMapper.MapCameraPointToDepthSpace(joint.Position);
+            return point;
+        }
+
+        public static DepthSpacePoint JointToDepthSpace(CameraSpacePoint pos)
+        {
+            var point = Sensor.CoordinateMapper.MapCameraPointToDepthSpace(pos);
             return point;
         }
 
