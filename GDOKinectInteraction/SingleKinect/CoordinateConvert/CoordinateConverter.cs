@@ -93,6 +93,11 @@ namespace SingleKinect.CoordinateConvert
             for(jointKey = 1;jointKey<=19; jointKey++)
             {
                 CameraSpacePoint pos = jointsData.getPos(jointKey);
+                if (pos.X == 77.0000f)
+                {
+                    Debug.Print("Wrong pos is returned \n");
+                }
+
                 Joint joint = jointsData.return_joint_type(jointKey,body);//In order to get the joint type
                 var point = JointToDepthSpace(pos);
                 joints.Add(joint.JointType, point);

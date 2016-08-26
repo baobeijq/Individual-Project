@@ -387,8 +387,3 @@ C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinec
 C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\bin\Debug\SharpDX.xml
 C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\bin\Debug\SharpDX.Direct3D9.xml
 C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\bin\Debug\SharpDX.Mathematics.xml
-C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\obj\Debug\MainWindow.g.i.cs
-C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\obj\Debug\App.g.i.cs
-C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\obj\Debug\SingleKinect_Content.g.i.cs
-C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\obj\Debug\SingleKinect_MarkupCompile.i.cache
-C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\obj\Debug\SingleKinect_MarkupCompile.i.lref

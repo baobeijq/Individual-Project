@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 //using ILNumerics;//new added
 using Microsoft.Kinect;
 //using System.Windows.Media;
-using SharpDX;
+/*using SharpDX;
 using SharpDX.Mathematics.Interop;
-using SharpDX.Direct3D9;
+using SharpDX.Direct3D9;*/
 
 //using Extreme.Mathematics;
 //using Extreme.Mathematics.LinearAlgebra;
@@ -40,12 +41,19 @@ namespace SingleKinect.EngagementManage
         private int row;
         private int col;
         private int matrixsize;
+
         float[,] skeletonM = new float[RowMax, ColMax];
+        float[,] result = new float[RowMax, ColMax];
+        float[,] transformedM = new float[RowMax, ColMax];
+
         float[] centralFixed;
         float[] centralMoving;
-        float[,] tform ;
-        float[,] transformedM=new float[RowMax, ColMax];
-        float[,] result = new float[RowMax, ColMax];
+
+        float[,] tform;
+        float[,] tformDtoC;
+        float[,] tformEtoD;
+        float[,] tformBtoC;
+
         private Body personBody;
         private int jointKEY;
         public DataToSendnew sendingData=new DataToSendnew();
@@ -54,20 +62,22 @@ namespace SingleKinect.EngagementManage
         {
             personBody = body;
 
-            //Create 4x4 Tform D1 to C1
-            Matrix tformDC = new Matrix(
-                (float) 0.5295, (float) 0.4623, (float) 0.7113, 0,
-                (float) -0.4861, (float) 0.8525, (float) -0.1922, 0,
-                (float) -0.6953, (float) -0.2440, (float) 0.6761, 0,
-                (float) 0.0043, (float) 0.0041, (float) 0.0062, (float) 1.0000);
+//            //Create 4x4 Tform D1 to C1
+//            Matrix tformDC = new Matrix(
+//                (float) 0.5295, (float) 0.4623, (float) 0.7113, 0,
+//                (float) -0.4861, (float) 0.8525, (float) -0.1922, 0,
+//                (float) -0.6953, (float) -0.2440, (float) 0.6761, 0,
+//                (float) 0.0043, (float) 0.0041, (float) 0.0062, (float) 1.0000);
 
-            tform = new float[TformSize, TformSize] {
-                {(float) 0.5295, (float) 0.4623, (float) 0.7113, 0},
-                {(float) -0.4861, (float) 0.8525, (float) -0.1922, 0},
-                {(float) -0.6953, (float) -0.2440, (float) 0.6761, 0} ,
-                {(float) 0.0043, (float) 0.0041, (float) 0.0062, (float) 1.0000} };
-            Console.WriteLine("\n tform: ");
-            Printtform(tform);
+            tform = chooseTform("DtoC");
+//            if(tform==null)
+//            {
+//                Debug.Print("Null tform is return");
+//                return;
+//            }
+
+//            Console.WriteLine("\n tform: ");
+//            Printtform(tform);
 
             //D1 central point
             centralMoving = new float[3] { (float)-0.0470, (float)0.3552, (float)3.4240 };
@@ -106,11 +116,12 @@ namespace SingleKinect.EngagementManage
                     }
                 }                
             }
-            Console.WriteLine("\n decentralized skeleton:");
-            PrintMatrix(skeletonM);
+            //Console.WriteLine("\n decentralized skeleton:");
+            //PrintMatrix(skeletonM);
 
-            //Create 19x4 Matrix for the original skeleton position of the Moving Matrix //THIS IS FOR TESTING
-            for (row = 0; row < RowMax ; row++)
+            #region 
+            //Create 19x4 Matrix for the original skeleton position of the Moving Matrix //THIS IS FOR TESTING            
+/*            for (row = 0; row < RowMax ; row++)
             {
                 for (col = 0; col < ColMax ; col++)
                 {
@@ -143,11 +154,10 @@ namespace SingleKinect.EngagementManage
             }
 
             Console.WriteLine("\n original skeleton:");
-            PrintMatrix(skeletonM);
-            //1. Print Matrix
-            //2. Visualize two skeleton
-            //3. Apply tform
-            //Transform the skeleton
+            PrintMatrix(skeletonM);*/
+
+            #endregion
+
         }
 
         public DataToSendnew transform()
@@ -185,8 +195,9 @@ namespace SingleKinect.EngagementManage
 
             }
 
-            Console.WriteLine("\n transformed skeleton: \n");
-            PrintMatrix(transformedM);
+            //test
+            //Console.WriteLine("\n transformed skeleton: \n");
+            //PrintMatrix(transformedM);
 
 
 
@@ -227,6 +238,49 @@ namespace SingleKinect.EngagementManage
             }
 
             return sendingData;
+        }
+
+        float[,] chooseTform(string pair)
+        {
+            float[,] tformNull=null;
+
+            //This is not an accurate tform -data need to be replaced
+            tformBtoC = new float[TformSize, TformSize] {
+                {(float) 0.5295, (float) 0.4623, (float) 0.7113, 0},
+                {(float) -0.4861, (float) 0.8525, (float) -0.1922, 0},
+                {(float) -0.6953, (float) -0.2440, (float) 0.6761, 0} ,
+                {(float) 0.0043, (float) 0.0041, (float) 0.0062, (float) 1.0000} };
+
+            //Create 4x4 Tform D1 to C1
+            tformDtoC = new float[TformSize, TformSize] {
+                {(float) 0.5295, (float) 0.4623, (float) 0.7113, 0},
+                {(float) -0.4861, (float) 0.8525, (float) -0.1922, 0},
+                {(float) -0.6953, (float) -0.2440, (float) 0.6761, 0} ,
+                {(float) 0.0043, (float) 0.0041, (float) 0.0062, (float) 1.0000} };
+
+            //Create 4x4 Tform E1 to D1            
+            tformEtoD = new float[TformSize, TformSize] {
+                {(float) 0.5121, (float) 0.4607, (float) 0.7249, 0},
+                {(float) -0.4551, (float) 0.8613, (float) -0.2260, 0},
+                {(float) -0.7285, (float) -0.2142, (float) 0.6507, 0} ,
+                {(float) 0.0032, (float) 0.0162, (float) 0.0222, (float) 1.0000} };
+
+            switch (pair)
+            {
+                case "BtoC":
+                    return tformBtoC;
+                case "DtoC":
+                    return tformDtoC;
+                case "EtoD":
+                    return tformEtoD;
+                //case 3:
+                   // skeletonM[row, col] = (float)1.0000;
+                   // break;
+                default:
+                    Console.WriteLine("Problem occur at choosing tform command= " + pair);
+                    break;
+            }
+            return tformNull;
         }
 
         /*function to pack the joints into a DataToSend Structure*/

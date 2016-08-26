@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -136,6 +137,7 @@ namespace SingleKinect.Draw
         {
             bodyCanvas.Children.Clear();
             engagerCanvas.Children.Clear();
+            tformBody.Children.Clear();
         }
 
         private void showHands(DepthSpacePoint rightHand, DepthSpacePoint leftHand, HandState rightHandState,

@@ -49,7 +49,7 @@ namespace SingleKinect.SendData
                 if (address.AddressFamily == AddressFamily.InterNetwork)
                 {
                     myAddress = address.ToString();
-                    Console.WriteLine("Client Address is "+ myAddress );
+                    //Console.WriteLine("Client Address is "+ myAddress );
                 }
             }
             client = new TcpClient();
@@ -100,7 +100,7 @@ namespace SingleKinect.SendData
                 /*File.WriteAllText(
                     @"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\Output.json",
                     lineToSend);*/
-                Console.WriteLine("Json saved");
+                //Console.WriteLine("Json saved");//test
 
                 _writer.WriteLine(lineToSend);
                 Console.WriteLine("Me: " + lineToSend);
@@ -133,7 +133,7 @@ namespace SingleKinect.SendData
         public void clientClose()
         {
             client.Close();
-            Console.WriteLine("Client is closed.\n");
+            //Console.WriteLine("Client is closed.\n");//test
         }
 
         //not used

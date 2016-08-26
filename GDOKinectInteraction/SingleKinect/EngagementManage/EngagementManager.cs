@@ -72,7 +72,6 @@ namespace SingleKinect.EngagementManage
         {
             
             clearUntrackedUser();
-            drawer.clear();
 
             //SendJson.initialize();
             int count = 0;//test
@@ -82,39 +81,42 @@ namespace SingleKinect.EngagementManage
                 var user = userTuple.Value;
 
                 //1.Here to do the matrix transformation, then send the transformed data
-                //2.visualize the transformation
+
                 Body preTformBody = user.body;//Body before transformation
                 TransformM.createMatrix(preTformBody);
                 DataToSendnew tformBody = TransformM.transform();//Skeleton after transformation
-
+                
                 tformBody.no = count;
                 tformBody.createdTime = DateTime.UtcNow;
 
                 drawer.currentCanvasName = "tformBody";
                 drawer.drawSkeleton(preTformBody);
                 drawer.drawSkeleton(tformBody,preTformBody);//Get Joint type from preTformBody.draw tformBody
-                drawer.clear();//need or not?
-                Console.WriteLine("I CLEARED \n");//test
 
 
                 //3.Get data needed from txt
                 //4.Test the skelton rotation in matlab
-                //5.Solve the visualize problem
                 //6.build basic babylon
 
                 //DataToSendnew sendingData =new DataToSendnew(user.body,count);//new
-                Console.WriteLine("Get JSON \n");//test
+
                 //test
-                string lineToSend = getSendingJson(tformBody) +"\n";
+                string lineToSend = getSendingJson(tformBody);
+
+
                 //File.WriteAllText(
                   // @"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\Output.json",
                    //lineToSend);
 
-                File.AppendAllText(@"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\OutputTest.json",
-                   lineToSend);
+                //RECORD the skeleton
+                //File.AppendAllText(@"C:\Users\Wei\Desktop\Interaction system for GDO\GDOKinectInteraction\SingleKinect\SendData\OutputTest.json",
+                   //lineToSend);
+
+
                 //Connect to server and send data
-                //SendJson.connect(sendingData); //seperate the connect and the send
+                //SendJson.connect(tformBody); //seperate the connect and the send
                 //send the data of all people tracked to server --color need to be added
+
                 count = count + 1;
                 Console.WriteLine("TCP "+count+ " part ends");//test
 
@@ -145,7 +147,7 @@ namespace SingleKinect.EngagementManage
                 }
             }
             
-            //SendJson.clientClose();
+            //SendJson.clientClose(); //IMPORTANT
 
             if (engage)
             {
