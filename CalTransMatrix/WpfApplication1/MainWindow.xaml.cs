@@ -115,12 +115,14 @@ namespace WpfApplication1
                     CameraSpacePoint[] cameraSpacePoints = new CameraSpacePoint[pixelNum];
                     ColorSpacePoint[] colorSpacePoints = new ColorSpacePoint[pixelNum];
 
+                    //Convert depth data into CameraSpace points
                     coordinateMapper.MapDepthFrameToCameraSpace(_depthData, cameraSpacePoints);
+                    //Convert depth data into ColorSpace points
                     coordinateMapper.MapDepthFrameToColorSpace(_depthData, colorSpacePoints);
 
-                    double[,] spaceAndRGB = new double[pixelNum, 6];//what does this mean
+                    double[,] spaceAndRGB = new double[pixelNum, 6];
 
-                    ushort maxDepth = 2000;
+                    ushort maxDepth = 5000;
                     ushort minDepth = 500;
 
                     List<int> rList = new List<int>();
@@ -134,7 +136,9 @@ namespace WpfApplication1
                         {
                             continue;
                         }
+
                         ColorSpacePoint point = colorSpacePoints[index];
+                        //To get corresponding cameraSpacePoint
                         CameraSpacePoint spacePoint = cameraSpacePoints[index];
                         
                         if (spacePoint.X == 0)
@@ -164,35 +168,20 @@ namespace WpfApplication1
                             spaceAndRGB[index, 4] = g;
                             spaceAndRGB[index, 5] = b;
 
-                            if (r > 140 && g < r - 80 && b < r - 80) //red
+                            if (r > 140 && g < r - 80 && b < r - 80) //pure red
                             {
                                 rList.Add(index);
                             }
-                            else if (r > 140 && g > r - 30 && b < r - 95)
+                            else if (r > 140 && g > r - 30 && b < r - 95)//(buttercup)yellow R:245 G:187 B:12 or R:241 G:196 B:15
                             {
                                 rList.Add(index);
                             }
-
-                            /*if (r < 140 || g > r - 80 && g < r - 30 || b > r - 80) //red
-                            {
-                                continue;
-                            }
-
-                            if (r < 140 || g < r - 30 || b > r - 95) // yellow
-                            {
-                                continue;
-                            }
-
-                             if (r < 140 || g < r - 30 || b > r - 95) // green
-                             {
-                                 continue;
-                             }*/
 
                             //rList.Add(index);
                         }
                     }
 
-                    StreamWriter file = new StreamWriter(@"C:\Users\Wei\Documents\MATLAB\RYtgt2.txt");
+                    StreamWriter file = new StreamWriter(@"C:\Users\Wei\Documents\MATLAB\ptc-B1.txt");
                     
                     foreach (int index in rList)
                     {
