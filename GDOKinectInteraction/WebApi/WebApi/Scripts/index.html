@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <script src="http://www.babylonjs.com/hand.minified-1.2.js"></script>
+        <script src="http://www.babylonjs.com/cannon.js"></script>
+        <script src="http://www.babylonjs.com/oimo.js"></script>
+        <script src="http://www.babylonjs.com/babylon.js"></script>
+        
+<script src="//d3js.org/d3.v3.min.js"></script>
+
+        <script src="https://platform.twitter.com/widgets.js"></script>
+
+        <style>
+            html, body {
+                /*overflow: hidden;*/
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                /*height:70%;*/
+                touch-action: none;
+            }
+
+        </style>
+    </head>
+<body>
+    <div id="stats" style="position: absolute; top: 60px; right: 20px; background-color: #fff5ee; color: black;"> </div>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+
+    // Babylon.js part
+    var engine, canvas;
+
+    canvas = document.getElementById("renderCanvas");
+    engine = new BABYLON.Engine(canvas, true);
+    var scene = new BABYLON.Scene(engine);
+
+    // Create camera and light
+    var light = new BABYLON.PointLight("Point", new BABYLON.Vector3(150, 150, 150), scene);
+
+    // Important: This camera does not allow to move, only to rotate
+    var camera = new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 8, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.attachControl(canvas, true);
+
+    var jsonData;
+    jQuery.ajax({
+      dataType: "json",
+      url: "simulated_data.json",
+      async: false,
+      success: function(data){
+        jsonData = data;
+      }
+    });
+
+    console.log("jsonData: ");
+    console.log(jsonData);
+
+    // Loop throught the loaded JSON file
+    for (var i in jsonData)
+    {
+        // console.log("jsonData[i]: "); console.log(jsonData[i]);
+
+        var box = BABYLON.MeshBuilder.CreateBox('box', 2, scene);
+        box.position.z=Math.random()*30; box.position.x=Math.random()*30;
+    }
+
+    scene.render();
+
+    // Telling the engine what to do every frame 
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+
+
+    // Resize
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+
+    </script>
+</body>
+</html>
